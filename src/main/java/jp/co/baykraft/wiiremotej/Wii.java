@@ -4,29 +4,45 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import wiiremotej.BalanceBoard;
 import wiiremotej.WiiDevice;
 import wiiremotej.WiiRemote;
 import wiiremotej.WiiRemoteJ;
 import wiiremotej.event.*;
 
-public class Wii extends WiiRemoteAdapter implements WiiRemoteListener
+public class Wii extends WiiRemoteAdapter implements WiiDeviceDiscoveryListener
 {
     private WiiDevice _remote;
 
-    public static void main(String... args)
-    {
+    public static void main(String... args) {
         Wii wii = new Wii();
-        WiiRemoteJ.findRemotes(new WiiDeviceDiscoveryListener() {
-            @Override
-            public void wiiDeviceDiscovered(WiiDeviceDiscoveredEvent wiiDeviceDiscoveredEvent) {
-                System.out.println("Bonjour");
-            }
+        try {
+            BalanceBoard b = WiiRemoteJ.findBalanceBoard();
+            b.addBalanceBoardListener(new BalanceBoardListener() {
+                public void buttonInputReceived(BBButtonEvent bbButtonEvent) {
+                    System.out.println("Bonjour");
+                }
 
-            @Override
-            public void findFinished(int i) {
+                public void statusReported(BBStatusEvent bbStatusEvent) {
 
-            }
-        }, 1);
+                }
+
+                public void massInputReceived(BBMassEvent bbMassEvent) {
+
+                }
+
+                public void combinedInputReceived(BBCombinedEvent bbCombinedEvent) {
+
+                }
+
+                public void disconnected() {
+
+                }
+            });
+        } catch(Exception e){
+
+
+        }
     }
 
 
@@ -85,5 +101,13 @@ public class Wii extends WiiRemoteAdapter implements WiiRemoteListener
             }
             System.exit(0);
         }
+    }
+
+    public void wiiDeviceDiscovered(WiiDeviceDiscoveredEvent wiiDeviceDiscoveredEvent) {
+        System.out.print("Coucou");
+    }
+
+    public void findFinished(int i) {
+
     }
 }
